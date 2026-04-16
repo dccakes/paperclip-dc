@@ -29,11 +29,16 @@ function parseGithubPrUrl(url: string): string | null {
   }
 }
 
-function buildOpenWithHref(path: string, openWith: "vscode" | "finder"): string {
+function encodeFilePath(filePath: string): string {
+  return filePath.split("/").map((segment) => encodeURIComponent(segment)).join("/");
+}
+
+function buildOpenWithHref(filePath: string, openWith: "vscode" | "finder"): string {
+  const encoded = encodeFilePath(filePath);
   if (openWith === "vscode") {
-    return `vscode://file${encodeURI(path)}`;
+    return `vscode://file${encoded}`;
   }
-  return `file://${encodeURI(path)}`;
+  return `file://${encoded}`;
 }
 
 type LinkRowProps = {

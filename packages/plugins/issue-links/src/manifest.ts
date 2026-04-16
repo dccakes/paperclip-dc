@@ -17,7 +17,6 @@ const manifest: PaperclipPluginManifestV1 = {
   author: "Paperclip",
   categories: ["ui"],
   capabilities: [
-    "issues.read",
     "plugin.state.read",
     "plugin.state.write",
     "instance.settings.register",

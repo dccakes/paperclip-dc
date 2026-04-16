@@ -21,7 +21,7 @@ const manifest: PaperclipPluginManifestV1 = {
     "plugin.state.write",
     "instance.settings.register",
     "agent.tools.register",
-    "ui.detailTab.register",
+    "ui.propertiesPanel.register",
     "activity.log.write",
   ],
   entrypoints: {
@@ -71,7 +71,7 @@ const manifest: PaperclipPluginManifestV1 = {
   ui: {
     slots: [
       {
-        type: "taskDetailView",
+        type: "propertiesPanel",
         id: SLOT_IDS.issueLinksView,
         displayName: "Issue Links",
         exportName: EXPORT_NAMES.issueLinksView,

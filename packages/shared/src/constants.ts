@@ -494,6 +494,7 @@ export const PLUGIN_CAPABILITIES = [
   "ui.dashboardWidget.register",
   "ui.commentAnnotation.register",
   "ui.action.register",
+  "ui.propertiesPanel.register",
 ] as const;
 export type PluginCapability = (typeof PLUGIN_CAPABILITIES)[number];
 
@@ -517,6 +518,7 @@ export const PLUGIN_UI_SLOT_TYPES = [
   "commentAnnotation",
   "commentContextMenuItem",
   "settingsPage",
+  "propertiesPanel",
 ] as const;
 export type PluginUiSlotType = (typeof PLUGIN_UI_SLOT_TYPES)[number];
 

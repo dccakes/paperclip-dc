@@ -22,6 +22,7 @@ import { Separator } from "@/components/ui/separator";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { User, Hexagon, ArrowUpRight, Tag, Plus, GitBranch, FolderOpen, Copy, Check } from "lucide-react";
 import { AgentIcon } from "./AgentIconPicker";
+import { PluginSlotOutlet } from "@/plugins/slots";
 
 function TruncatedCopyable({ value, icon: Icon }: { value: string; icon: React.ComponentType<{ className?: string }> }) {
   const [copied, setCopied] = useState(false);
@@ -1058,6 +1059,17 @@ export function IssueProperties({
             <span className="text-sm font-mono">{issue.requestDepth}</span>
           </PropertyRow>
         )}
+
+        <PluginSlotOutlet
+          slotTypes={["propertiesPanel"]}
+          entityType="issue"
+          context={{
+            companyId: companyId,
+            projectId: issue.projectId ?? null,
+            entityId: issue.id,
+            entityType: "issue",
+          }}
+        />
       </div>
 
       {issue.currentExecutionWorkspace?.branchName || issue.currentExecutionWorkspace?.cwd ? (

@@ -86,14 +86,14 @@ function LinkRow({ label, value, placeholder, displayValue, href, openInNewTab, 
   }
 
   return (
-    <div className="flex items-start gap-3 py-1 min-h-[28px]">
-      <span className="w-[120px] shrink-0 text-xs font-medium text-muted-foreground pt-0.5">{label}</span>
-      <div className="flex-1 min-w-0">
+    <div className="flex items-start gap-3 py-1.5">
+      <span className="text-xs text-muted-foreground shrink-0 w-20 mt-0.5">{label}</span>
+      <div className="flex items-center gap-1.5 min-w-0 flex-1">
         {editing ? (
           <input
             ref={inputRef}
             type="text"
-            className="w-full rounded border border-input bg-background px-2 py-0.5 text-xs text-foreground outline-none focus:border-ring"
+            className="w-full rounded border border-input bg-background px-2 py-0.5 text-sm text-foreground outline-none focus:border-ring"
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             onBlur={() => void commitEdit()}
@@ -108,7 +108,7 @@ function LinkRow({ label, value, placeholder, displayValue, href, openInNewTab, 
             <a
               href={href(value)}
               {...(openInNewTab ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-              className="text-xs text-primary hover:underline truncate"
+              className="text-sm text-primary hover:underline truncate"
               title={value}
               onClick={openInNewTab ? undefined : (e) => { e.preventDefault(); window.location.href = href(value); }}
             >
@@ -126,7 +126,7 @@ function LinkRow({ label, value, placeholder, displayValue, href, openInNewTab, 
         ) : (
           <button
             type="button"
-            className="text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
             onClick={startEdit}
             title={placeholder}
           >
@@ -171,7 +171,7 @@ export function IssueLinksView() {
   }
 
   return (
-    <div className="space-y-0.5">
+    <div>
       <LinkRow
         label="Local Path"
         value={links?.localPath ?? null}

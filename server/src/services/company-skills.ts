@@ -4,7 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { and, asc, eq } from "drizzle-orm";
 import type { Db } from "@paperclipai/db";
-import { companySkills } from "@paperclipai/db";
+import { companySkills, plugins as pluginsTable } from "@paperclipai/db";
 import { readPaperclipSkillSyncPreference } from "@paperclipai/adapter-utils/server-utils";
 import type { PaperclipSkillEntry } from "@paperclipai/adapter-utils/server-utils";
 import type {
@@ -2080,6 +2080,48 @@ export function companySkillService(db: Db) {
           ? "Bundled Paperclip skills are always available for local adapters."
           : null,
       });
+    }
+
+    // Append skill entries from enabled plugins that ship a skills/ directory.
+    // Plugins that declare agent.tools.register and have a packagePath may
+    // include a skills/<skill-name>/ directory alongside their dist/ output.
+    const readyPlugins = await db
+      .select({
+        pluginKey: pluginsTable.pluginKey,
+        packagePath: pluginsTable.packagePath,
+        manifestJson: pluginsTable.manifestJson,
+      })
+      .from(pluginsTable)
+      .where(eq(pluginsTable.status, "ready"));
+
+    for (const plugin of readyPlugins) {
+      const capabilities: string[] = Array.isArray(plugin.manifestJson?.capabilities)
+        ? (plugin.manifestJson.capabilities as string[])
+        : [];
+      if (!capabilities.includes("agent.tools.register")) continue;
+      if (!plugin.packagePath) continue;
+
+      const skillsRoot = path.join(plugin.packagePath, "skills");
+      let skillDirs: string[] = [];
+      try {
+        const entries = await fs.readdir(skillsRoot, { withFileTypes: true });
+        skillDirs = entries.filter((e) => e.isDirectory()).map((e) => e.name);
+      } catch {
+        // skills/ dir doesn't exist — this plugin doesn't contribute skills
+        continue;
+      }
+
+      for (const skillDirName of skillDirs) {
+        const skillSource = path.join(skillsRoot, skillDirName);
+        const skillKey = `plugin:${plugin.pluginKey}/${skillDirName}`;
+        out.push({
+          key: skillKey,
+          runtimeName: `plugin-${plugin.pluginKey}-${skillDirName}`,
+          source: skillSource,
+          required: false,
+          requiredReason: null,
+        });
+      }
     }
 
     out.sort((left, right) => left.key.localeCompare(right.key));
